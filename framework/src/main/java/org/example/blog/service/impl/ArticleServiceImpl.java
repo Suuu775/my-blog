@@ -5,9 +5,14 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.example.blog.constant.SystemConstants;
 import org.example.blog.dao.ArticleMapper;
+import org.example.blog.dao.CategoryMapper;
 import org.example.blog.domain.ResponseResult;
 import org.example.blog.domain.entity.Article;
+import org.example.blog.domain.entity.Category;
+import org.example.blog.domain.vo.ArticleDetailVo;
+import org.example.blog.domain.vo.ArticleListVo;
 import org.example.blog.domain.vo.HotArticleVo;
+import org.example.blog.domain.vo.PageVo;
 import org.example.blog.service.IArticleService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +33,9 @@ import java.util.List;
 public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> implements IArticleService {
     @Autowired
     ArticleMapper articleMapper;
+
+    @Autowired
+    CategoryMapper categoryMapper;
 
     @Override
     public ResponseResult hotArticleList() {
@@ -53,5 +61,50 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
 
 
         return ResponseResult.okResult(articleVos);
+    }
+
+    @Override
+    public ResponseResult articleList(Integer pageNum, Integer pageSize, Long categoryId) {
+//        ①只能查询正式发布的文章 ②置顶的文章要显示在最前面
+
+        LambdaQueryWrapper<Article> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Article::getStatus,SystemConstants.ARTICLE_STATUS_NORMAL)
+                .orderByDesc(Article::getIsTop)
+                .eq(categoryId!= 0,Article::getCategoryId,categoryId);
+// 分页查询
+        Page<Article> articlePage = new Page<>(pageNum, pageSize);
+        articleMapper.selectPage(articlePage,queryWrapper);
+        List<Article> articles = articlePage.getRecords();
+
+// 封装vo
+        ArrayList<ArticleListVo> articleListVos = new ArrayList<>();
+        for (Article article:articles){
+            ArticleListVo  articleListVo = new ArticleListVo();
+            BeanUtils.copyProperties(article,articleListVo);
+
+            Category category = categoryMapper.selectById(article.getCategoryId());
+            String name = category.getName();
+            articleListVo.setCategoryName(name);
+
+            articleListVos.add(articleListVo);
+        }
+
+//  封装pagevo
+        PageVo pageVo = new PageVo(articleListVos, articlePage.getTotal());
+        return ResponseResult.okResult(pageVo);
+    }
+
+    @Override
+    public ResponseResult getArticleDetail(Long id) {
+        Article article = articleMapper.selectById(id);
+
+        ArticleDetailVo articleDetailVo = new ArticleDetailVo();
+        BeanUtils.copyProperties(article,articleDetailVo);
+
+//        根据分类id查询分类名,
+        Category category = categoryMapper.selectById(article.getCategoryId());
+        articleDetailVo.setCategoryName(category.getName());
+
+        return ResponseResult.okResult(articleDetailVo);
     }
 }

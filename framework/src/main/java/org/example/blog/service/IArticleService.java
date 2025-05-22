@@ -15,4 +15,8 @@ import org.example.blog.domain.entity.Article;
 public interface IArticleService extends IService<Article> {
 
     ResponseResult hotArticleList();
+
+    ResponseResult articleList(Integer pageNum, Integer pageSize, Long categoryId);
+
+    ResponseResult getArticleDetail(Long id);
 }
