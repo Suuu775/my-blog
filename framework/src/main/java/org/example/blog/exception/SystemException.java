@@ -1,0 +1,21 @@
+package org.example.blog.exception;
+
+import org.example.blog.enums.AppHttpCodeEnum;
+
+public class SystemException  extends Throwable{
+    private int code;
+    private String msg;
+    public int getCode() {
+        return code;
+    }
+    public String getMsg() {
+        return msg;
+    }
+
+
+    public SystemException(AppHttpCodeEnum httpCodeEnum) {
+        super(httpCodeEnum.getMsg());
+        this.code = httpCodeEnum.getCode();
+        this.msg = httpCodeEnum.getMsg();
+    }
+}
