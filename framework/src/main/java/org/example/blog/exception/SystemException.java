@@ -2,7 +2,7 @@ package org.example.blog.exception;
 
 import org.example.blog.enums.AppHttpCodeEnum;
 
-public class SystemException  extends Throwable{
+public class SystemException  extends RuntimeException{
     private int code;
     private String msg;
     public int getCode() {

@@ -1,6 +1,10 @@
 package org.example.blog.controller;
 
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.example.blog.domain.ResponseResult;
+import org.example.blog.domain.entity.Comment;
+import org.example.blog.service.ICommentService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.stereotype.Controller;
 
 /**
@@ -15,4 +19,18 @@ import org.springframework.stereotype.Controller;
 @RequestMapping("/comment")
 public class CommentController {
 
+    @Autowired
+    private ICommentService commentService;
+
+    @PostMapping()
+    public ResponseResult comment(@RequestBody Comment comment){
+        return commentService.addComment(comment);
+    }
+
+
+    @GetMapping("/commentList")
+    @ResponseBody
+    public ResponseResult commentList(Long articleId, Integer pageNum, Integer pageSize){
+        return commentService.commentList(articleId,pageNum,pageSize);
+    }
 }
