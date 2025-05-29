@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.example.blog.dao.CommentMapper;
-import org.example.blog.dao.UserMapper;
 import org.example.blog.domain.ResponseResult;
 import org.example.blog.domain.entity.Comment;
 import org.example.blog.domain.vo.CommentVo;
@@ -19,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -36,13 +34,13 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment>
     private IUserService userService;
 
     @Override
-    public ResponseResult commentList(Long articleId, Integer pageNum, Integer
+    public ResponseResult commentList(String commentType, Long articleId, Integer pageNum, Integer
             pageSize) {
 //查询对应文章的根评论
         LambdaQueryWrapper<Comment> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(Comment::getArticleId, articleId)
+        queryWrapper.eq(articleId != null,Comment::getArticleId, articleId)
                 .eq(Comment::getRootId, -1)
-                .eq(Comment::getType, 0)
+                .eq(Comment::getType,commentType)
                 .orderByAsc(Comment::getCreateTime);
 //分页查询
         Page page = new Page(pageNum, pageSize);
