@@ -15,4 +15,8 @@ import org.example.blog.domain.entity.User;
 public interface IUserService extends IService<User> {
 
     ResponseResult userInfo();
+
+    ResponseResult updateUserInfo(User user);
+
+    ResponseResult register(User user);
 }

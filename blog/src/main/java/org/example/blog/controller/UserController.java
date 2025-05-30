@@ -1,12 +1,11 @@
 package org.example.blog.controller;
 
 import org.example.blog.domain.ResponseResult;
+import org.example.blog.domain.entity.User;
 import org.example.blog.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  * <p>
@@ -26,5 +25,17 @@ public class UserController {
     @ResponseBody
     public ResponseResult userInfo(){
         return userService.userInfo();
+    }
+
+    @PutMapping("/userInfo")
+    @ResponseBody
+    public ResponseResult updateUserInfo(@RequestBody User user){
+        return userService.updateUserInfo(user);
+    }
+
+    @PostMapping("/register")
+    @ResponseBody
+    public ResponseResult register(@RequestBody User user){
+        return userService.register(user);
     }
 }
