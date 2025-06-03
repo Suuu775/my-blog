@@ -25,4 +25,9 @@ public class SystemConstants{
      */
     public static final String LINK_COMMENT = "1";
 
+    /**
+     * redis中viewCount数据的key
+     */
+    public static final String VIEW_CONT  = "viewCount";
+
 }

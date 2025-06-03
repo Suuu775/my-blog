@@ -2,6 +2,10 @@ package org.example.blog.domain.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -13,6 +17,9 @@ import java.time.LocalDateTime;
  * @author SSJ
  * @since 2025-05-20
  */
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Article implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -77,6 +84,11 @@ public class Article implements Serializable {
      * 删除标志（0代表未删除，1代表已删除）
      */
     private Integer delFlag;
+
+    public Article(Long id, Long viewCount) {
+        this.id = id;
+        this.viewCount =viewCount;
+    }
 
     public Long getId() {
         return id;

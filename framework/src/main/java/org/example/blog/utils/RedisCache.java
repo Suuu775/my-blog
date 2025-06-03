@@ -235,4 +235,16 @@ public class RedisCache
     {
         return redisTemplate.keys(pattern);
     }
+
+    /**
+     * 对应缓存Map中特定key的值进行算数运算
+     * @param keyMap 需要操作Map缓存的key
+     * @param key Map中要被运算值对应的key
+     * @param val 运算值
+     */
+    public void addCacheMapValue(String keyMap, String key, Integer val)
+    {
+        redisTemplate.opsForHash().increment(keyMap,key,val);
+    }
+
 }

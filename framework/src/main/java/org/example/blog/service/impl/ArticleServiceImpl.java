@@ -14,6 +14,7 @@ import org.example.blog.domain.vo.ArticleListVo;
 import org.example.blog.domain.vo.HotArticleVo;
 import org.example.blog.domain.vo.PageVo;
 import org.example.blog.service.IArticleService;
+import org.example.blog.utils.RedisCache;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,10 +33,13 @@ import java.util.List;
 @Service
 public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> implements IArticleService {
     @Autowired
-    ArticleMapper articleMapper;
+    private  ArticleMapper articleMapper;
 
     @Autowired
-    CategoryMapper categoryMapper;
+    private  CategoryMapper categoryMapper;
+
+    @Autowired
+    private RedisCache redisCache;
 
     @Override
     public ResponseResult hotArticleList() {
@@ -105,6 +109,16 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         Category category = categoryMapper.selectById(article.getCategoryId());
         articleDetailVo.setCategoryName(category.getName());
 
+//        从redis中取viewCount
+        Integer value = redisCache.getCacheMapValue(SystemConstants.VIEW_CONT, id.toString());
+        articleDetailVo.setViewCount(value.longValue());
+
         return ResponseResult.okResult(articleDetailVo);
+    }
+
+    @Override
+    public ResponseResult updateViewCount(Long id) {
+        redisCache.addCacheMapValue(SystemConstants.VIEW_CONT,id.toString(),1);
+        return null;
     }
 }
