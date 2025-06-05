@@ -30,4 +30,5 @@ public class SystemConstants{
      */
     public static final String VIEW_CONT  = "viewCount";
 
+    public static final int STATUS_NORMAL = 0;
 }
