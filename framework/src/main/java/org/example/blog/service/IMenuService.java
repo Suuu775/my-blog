@@ -2,6 +2,7 @@ package org.example.blog.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.example.blog.domain.entity.Menu;
+import org.example.blog.domain.vo.MenuVo;
 
 import java.util.List;
 
@@ -16,4 +17,6 @@ import java.util.List;
 public interface IMenuService extends IService<Menu> {
 
     List<String> selectPermsByUserId(Long id);
+
+    List<MenuVo> selectRouterMenuTreeByUserId(Long userId);
 }

@@ -3,6 +3,7 @@ package org.example.blog.controller;
 import org.example.blog.domain.ResponseResult;
 import org.example.blog.domain.entity.User;
 import org.example.blog.domain.vo.AdminUserInfoVo;
+import org.example.blog.domain.vo.MenuVo;
 import org.example.blog.domain.vo.UserInfoVo;
 import org.example.blog.enums.AppHttpCodeEnum;
 import org.example.blog.exception.SystemException;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
 import java.util.List;
 
 @RestController
@@ -53,5 +55,21 @@ public class AdminLoginController {
 //封装数据返回
         AdminUserInfoVo adminUserInfoVo = new AdminUserInfoVo(perms,roles,userInfoVo);
         return ResponseResult.okResult(adminUserInfoVo);
+    }
+
+    @GetMapping("/getRouters")
+    public ResponseResult getRouters() {
+        Long userId = SecurityUtils.getUserId();
+//查询menu，返回的menus以tree形式表示父子菜单的层级关系
+        List<MenuVo> menus = menuService.selectRouterMenuTreeByUserId(userId);
+//封装数据返回
+        HashMap<Object, Object> map = new HashMap<>();
+        map.put("menus", menus);
+        return ResponseResult.okResult(map);
+    }
+
+    @PostMapping("/user/logout")
+    public ResponseResult logout(){
+        return adminLoginService.logout();
     }
 }

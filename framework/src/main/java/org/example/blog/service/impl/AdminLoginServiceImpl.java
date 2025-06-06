@@ -8,6 +8,7 @@ import org.example.blog.domain.vo.UserInfoVo;
 import org.example.blog.service.IAdminLoginService;
 import org.example.blog.utils.JwtUtil;
 import org.example.blog.utils.RedisCache;
+import org.example.blog.utils.SecurityUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -48,6 +49,13 @@ public class AdminLoginServiceImpl implements IAdminLoginService {
         map.put("token",jwt);
 
         return ResponseResult.okResult(map);
+    }
+
+    @Override
+    public ResponseResult logout() {
+        Long userId = SecurityUtils.getUserId();
+        redisCache.deleteObject("adminlogin"+userId);
+        return ResponseResult.okResult();
     }
 
 }

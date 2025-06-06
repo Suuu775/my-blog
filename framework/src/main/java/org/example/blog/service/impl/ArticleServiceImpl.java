@@ -1,6 +1,7 @@
 package org.example.blog.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.example.blog.constant.SystemConstants;
@@ -14,6 +15,7 @@ import org.example.blog.domain.vo.ArticleListVo;
 import org.example.blog.domain.vo.HotArticleVo;
 import org.example.blog.domain.vo.PageVo;
 import org.example.blog.service.IArticleService;
+import org.example.blog.utils.BeanCopyUtils;
 import org.example.blog.utils.RedisCache;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -120,5 +122,23 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
     public ResponseResult updateViewCount(Long id) {
         redisCache.addCacheMapValue(SystemConstants.VIEW_CONT,id.toString(),1);
         return null;
+    }
+
+    @Override
+    public ResponseResult getAdminArticleList(Integer pageNum, Integer pageSize, String title, String summary) {
+        LambdaQueryWrapper<Article> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.like(title != null,Article::getTitle,title)
+                .like(summary!=null,Article::getSummary,summary)
+                .orderByDesc(Article::getIsTop)
+                .orderByDesc(Article::getCreateTime);
+
+        Page<Article> articlePage = new Page<>(pageNum, pageSize);
+
+        articleMapper.selectPage(articlePage,queryWrapper);
+        List<Article> articles = articlePage.getRecords();
+        List<ArticleListVo> articleListVos = BeanCopyUtils.copyBeanList(articles, ArticleListVo.class);
+
+        PageVo pageVo = new PageVo(articleListVos, articlePage.getTotal());
+        return ResponseResult.okResult(pageVo);
     }
 }

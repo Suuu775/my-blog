@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -15,6 +16,8 @@ import java.util.Collections;
 public class LoginUser implements UserDetails {
 
     private User user;
+
+    private List<String> permissions;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
