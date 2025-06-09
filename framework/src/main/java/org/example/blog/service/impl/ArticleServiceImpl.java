@@ -8,21 +8,26 @@ import org.example.blog.constant.SystemConstants;
 import org.example.blog.dao.ArticleMapper;
 import org.example.blog.dao.CategoryMapper;
 import org.example.blog.domain.ResponseResult;
+import org.example.blog.domain.dto.AddArticleDto;
 import org.example.blog.domain.entity.Article;
+import org.example.blog.domain.entity.ArticleTag;
 import org.example.blog.domain.entity.Category;
 import org.example.blog.domain.vo.ArticleDetailVo;
 import org.example.blog.domain.vo.ArticleListVo;
 import org.example.blog.domain.vo.HotArticleVo;
 import org.example.blog.domain.vo.PageVo;
 import org.example.blog.service.IArticleService;
+import org.example.blog.service.IArticleTagService;
 import org.example.blog.utils.BeanCopyUtils;
 import org.example.blog.utils.RedisCache;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -34,6 +39,9 @@ import java.util.List;
  */
 @Service
 public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> implements IArticleService {
+    @Autowired
+    private IArticleTagService articleTagService;
+
     @Autowired
     private  ArticleMapper articleMapper;
 
@@ -141,4 +149,20 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         PageVo pageVo = new PageVo(articleListVos, articlePage.getTotal());
         return ResponseResult.okResult(pageVo);
     }
+
+    @Override
+    @Transactional
+    public ResponseResult add(AddArticleDto article) {
+        //添加博⽂
+        Article article1 = BeanCopyUtils.copyBean(article, Article.class);
+        save(article1);
+        // 将List<Long> tags转为List<ArticleTag> articleTags对象
+        List<ArticleTag> articleTags = article.getTags().stream()
+                .map(tagId -> new ArticleTag(article1.getId(), tagId)).collect(Collectors.toList());
+
+        articleTagService.saveBatch(articleTags);
+        return ResponseResult.okResult();
+        //添加博⽂和标签的关联关系
+    }
+
 }
