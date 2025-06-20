@@ -1,6 +1,9 @@
 package org.example.blog.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import org.example.blog.constant.SystemConstants;
 import org.example.blog.dao.RoleMapper;
+import org.example.blog.domain.ResponseResult;
 import org.example.blog.domain.entity.Role;
 import org.example.blog.service.IRoleService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -34,5 +37,13 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IR
         }
         List<String> roles = roleMapper.selectRoleKeyByUserId(id);
         return roles;
+    }
+
+    @Override
+    public ResponseResult listAllRole() {
+        LambdaQueryWrapper<Role> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Role::getStatus, SystemConstants.STATUS_NORMAL);
+        List<Role> roles = roleMapper.selectList(queryWrapper);
+        return ResponseResult.okResult(roles);
     }
 }

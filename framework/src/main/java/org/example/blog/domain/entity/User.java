@@ -97,6 +97,10 @@ public class User implements Serializable {
      */
     private Integer delFlag;
 
+    //关联角色id数组，非user表字段
+    @TableField(exist = false)
+    private Long[] roleIds;
+
     public Long getId() {
         return id;
     }
@@ -236,5 +240,9 @@ public class User implements Serializable {
             ", updateTime = " + updateTime +
             ", delFlag = " + delFlag +
         "}";
+    }
+
+    public Long[] getRoleIds() {
+        return this.roleIds;
     }
 }
