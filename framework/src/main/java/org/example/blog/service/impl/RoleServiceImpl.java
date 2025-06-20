@@ -38,12 +38,4 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IR
         List<String> roles = roleMapper.selectRoleKeyByUserId(id);
         return roles;
     }
-
-    @Override
-    public ResponseResult listAllRole() {
-        LambdaQueryWrapper<Role> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(Role::getStatus, SystemConstants.STATUS_NORMAL);
-        List<Role> roles = roleMapper.selectList(queryWrapper);
-        return ResponseResult.okResult(roles);
-    }
 }

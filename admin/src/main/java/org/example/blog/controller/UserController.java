@@ -50,17 +50,6 @@ public class UserController {
     @Autowired
     private IRoleService roleService;
 
-    @GetMapping(value = { "/{userId}" })
-    public ResponseResult getUserInfoAndRoleIds(@PathVariable(value = "userId") Long userId) {
-        List<Role> roles = roleService.selectRoleAll();
-        User user = userService.getById(userId);
-        //当前用户所具有的角色id列表
-        List<Long> roleIds = roleService.selectRoleIdByUserId(userId);
-
-        UserInfoAndRoleIdsVo vo = new UserInfoAndRoleIdsVo(user,roles,roleIds);
-        return ResponseResult.okResult(vo);
-    }
-
 //    删除用户
 @DeleteMapping("/{userIds}")
 public ResponseResult remove(@PathVariable List<Long> userIds) {
