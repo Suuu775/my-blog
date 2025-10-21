@@ -1,4 +1,4 @@
-# 基于SpringBoot的博客系统的设计与实现
+# 基于SpringBoot和MyBatis-Plus的博客系统
 
 ## 如何运行
 
