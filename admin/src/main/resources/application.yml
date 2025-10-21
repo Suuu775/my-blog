@@ -22,7 +22,7 @@ mybatis-plus:
       id-type: auto
 
 oss:
-  accessKey: Q2CzQbWvmN09JDFiCyEdNLYZ8_5biwJGFhvH4E_6
-  secretKey: YhC0YlQKQW7_4yC3Lxn6BzOgLeWuieMK8sar188Y
-  bucket: my-blog-space0
-  domain: http://sx2a6l4a3.hn-bkt.clouddn.com/
+  accessKey: your_access_key
+  secretKey: your_secret_key
+  bucket: your_bucket
+  domain: your_domain
